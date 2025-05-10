@@ -5,9 +5,6 @@
 -->
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=nausherwannasir&theme=dark&show_icons=true&include_all_commits=true" alt="Nausherwan's GitHub Stats"/>
-</p>
-<p align="center">
   <img src="https://github-readme-activity-graph.vercel.app/graph?username=nausherwannasir&theme=github-compact" alt="Nausherwan's GitHub Activity Graph"/>
 </p>
 <p align="center">
@@ -34,7 +31,7 @@
 
 #### 📫 How to reach me
 - Email: nausherwan436@gmail.com
-- LinkedIn: [linkedin.com/in/nausherwannasir](https://linkedin.com/in/nausherwannasir)
+- LinkedIn: [linkedin.com/in/nausherwannasir](https://www.linkedin.com/in/nausherwan-nasir-8399751b2/)
 
 #### 😄 Pronouns
 - He/Him
