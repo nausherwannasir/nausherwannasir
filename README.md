@@ -14,6 +14,11 @@
   <img src="https://komarev.com/ghpvc/?username=nausherwannasir&label=Profile%20views&style=for-the-badge" alt="Profile views"/>
 </p>
 
+<p align="center">
+  <img src="https://github-readme-streak-stats.herokuapp.com/?user=nausherwannasir&theme=dark" alt="GitHub Streak Stats"/>
+</p>
+
+
 ---
 
 #### 🔭 I’m currently working on
