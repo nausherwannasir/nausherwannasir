@@ -13,6 +13,7 @@ import hashlib
 HEADERS = {'authorization': 'token '+ os.environ['ACCESS_TOKEN']}
 USER_NAME = os.environ['USER_NAME'] # Provided by environment (e.g., 'nausherwannasir')
 QUERY_COUNT = {'user_getter': 0, 'follower_getter': 0, 'graph_repos_stars': 0, 'recursive_loc': 0, 'graph_commits': 0, 'loc_query': 0}
+REQUEST_TIMEOUT = float(os.environ.get('GITHUB_TIMEOUT', 60))
 
 
 def daily_readme(start_date):
@@ -20,7 +21,7 @@ def daily_readme(start_date):
     Returns the length of time since the provided datetime
     e.g. 'XX years, XX months, XX days'
     """
-    diff = relativedelta.relativedelta(datetime.datetime.utcnow(), start_date)
+    diff = relativedelta.relativedelta(datetime.datetime.now(datetime.timezone.utc), start_date)
     return '{} {}, {} {}, {} {}{}'.format(
         diff.years, 'year' + format_plural(diff.years), 
         diff.months, 'month' + format_plural(diff.months), 
@@ -44,7 +45,17 @@ def simple_request(func_name, query, variables):
     """
     Returns a request, or raises an Exception if the response does not succeed.
     """
-    request = requests.post('https://api.github.com/graphql', json={'query': query, 'variables':variables}, headers=HEADERS)
+    try:
+        request = requests.post(
+            'https://api.github.com/graphql',
+            json={'query': query, 'variables': variables},
+            headers=HEADERS,
+            timeout=REQUEST_TIMEOUT
+        )
+    except requests.Timeout:
+        raise TimeoutError(f"{func_name} timed out after {REQUEST_TIMEOUT} seconds") from None
+    except requests.RequestException as exc:
+        raise RuntimeError(f"{func_name} failed to reach GitHub: {exc}") from exc
     if request.status_code == 200:
         return request
     raise Exception(func_name, ' has failed with a', request.status_code, request.text, QUERY_COUNT)
@@ -144,7 +155,19 @@ def recursive_loc(owner, repo_name, data, cache_comment, addition_total=0, delet
         }
     }'''
     variables = {'repo_name': repo_name, 'owner': owner, 'cursor': cursor}
-    request = requests.post('https://api.github.com/graphql', json={'query': query, 'variables':variables}, headers=HEADERS) # I cannot use simple_request(), because I want to save the file before raising Exception
+    try:
+        request = requests.post(
+            'https://api.github.com/graphql',
+            json={'query': query, 'variables': variables},
+            headers=HEADERS,
+            timeout=REQUEST_TIMEOUT
+        )  # I cannot use simple_request(), because I want to save the file before raising Exception
+    except requests.Timeout:
+        force_close_file(data, cache_comment)
+        raise TimeoutError(f"recursive_loc timed out fetching {owner}/{repo_name}") from None
+    except requests.RequestException as exc:
+        force_close_file(data, cache_comment)
+        raise RuntimeError(f"recursive_loc error fetching {owner}/{repo_name}: {exc}") from exc
     if request.status_code == 200:
         if request.json()['data']['repository']['defaultBranchRef'] != None: # Only count commits if repo isn't empty
             return loc_counter_one_repo(owner, repo_name, data, cache_comment, request.json()['data']['repository']['defaultBranchRef']['target']['history'], addition_total, deletion_total, my_commits)
@@ -241,15 +264,20 @@ def cache_builder(edges, comment_size, force_cache, loc_add=0, loc_del=0):
     cache_comment = data[:comment_size] # save the comment block
     data = data[comment_size:] # remove those lines
     for index in range(len(edges)):
+        repo_name_with_owner = edges[index]['node']['nameWithOwner']
         repo_hash, commit_count, *__ = data[index].split()
-        if repo_hash == hashlib.sha256(edges[index]['node']['nameWithOwner'].encode('utf-8')).hexdigest():
+        if repo_hash == hashlib.sha256(repo_name_with_owner.encode('utf-8')).hexdigest():
             try:
-                if int(commit_count) != edges[index]['node']['defaultBranchRef']['target']['history']['totalCount']:
-                    # if commit count has changed, update loc for that repo
-                    owner, repo_name = edges[index]['node']['nameWithOwner'].split('/')
+                total_commit_count = edges[index]['node']['defaultBranchRef']['target']['history']['totalCount']
+                if int(commit_count) != total_commit_count:
+                    owner, repo_name = repo_name_with_owner.split('/')
+                    print(f"Updating cache for {owner}/{repo_name} (commit diff detected)...", flush=True)
                     loc = recursive_loc(owner, repo_name, data, cache_comment)
-                    data[index] = repo_hash + ' ' + str(edges[index]['node']['defaultBranchRef']['target']['history']['totalCount']) + ' ' + str(loc[2]) + ' ' + str(loc[0]) + ' ' + str(loc[1]) + '\n'
+                    data[index] = f"{repo_hash} {total_commit_count} {loc[2]} {loc[0]} {loc[1]}\n"
+                else:
+                    print(f"Using cached data for {repo_name_with_owner}", flush=True)
             except TypeError: # If the repo is empty
+                print(f"{repo_name_with_owner} appears empty; caching zeros.", flush=True)
                 data[index] = repo_hash + ' 0 0 0 0\n'
     with open(filename, 'w') as f:
         f.writelines(cache_comment)
@@ -447,7 +475,7 @@ if __name__ == '__main__':
     user_data, user_time = perf_counter(user_getter, USER_NAME)
     OWNER_ID, acc_date = user_data
     formatter('account data', user_time)
-    account_start = datetime.datetime.strptime(acc_date, "%Y-%m-%dT%H:%M:%SZ")
+    account_start = datetime.datetime.strptime(acc_date, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=datetime.timezone.utc)
     age_data, age_time = perf_counter(daily_readme, account_start)
     formatter('account age', age_time)
     total_loc, loc_time = perf_counter(loc_query, ['OWNER', 'COLLABORATOR', 'ORGANIZATION_MEMBER'], 7)
