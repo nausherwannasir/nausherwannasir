@@ -102,4 +102,4 @@ text, tspan {white-space: pre;}
 <tspan x="390" y="510" class="cc">. </tspan><tspan x="410" y="510" class="key">Lines of Code</tspan><tspan x="520" y="510" class="cc" lengthAdjust="spacing" textLength="150" id="loc_data_dots">. </tspan><tspan x="680" y="510" class="value" id="loc_data">119,937</tspan><tspan class="cc"> (</tspan><tspan class="addColor" id="loc_add">141,680</tspan><tspan class="addColor">++</tspan><tspan class="cc">, </tspan><tspan class="delColor" id="loc_del">21,743</tspan><tspan class="delColor">--</tspan><tspan class="cc">)</tspan>
 </text>
 </svg>
-</svg>
+
