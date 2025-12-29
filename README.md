@@ -24,7 +24,7 @@
 
 ### Connect with me!
 <div>
-    <a href="https://www.linkedin.com/in/YOUR-LINKEDIN-USERNAME/">
+    <a href="https://www.linkedin.com/in/YOUR-LINKEDIN-USERNAME/](https://www.linkedin.com/in/nausherwan-nasir-8399751b2/">
         <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/>
     </a>
     <a href="mailto:Nausherwan436@gmail.com">
@@ -34,6 +34,6 @@
 
 ### Employer?
 > [!IMPORTANT]  
-> [Download My Resume](YOUR-RESUME-LINK-HERE)
+> [Download My Resume](https://nausherwannasir.github.io/nausherwannasirweb/)
 
 <img width=100% src="https://capsule-render.vercel.app/api?type=waving&color=0078D4&height=120&section=footer" alt="footer"/>
