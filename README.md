@@ -12,15 +12,15 @@
 [![My Skills](https://skillicons.dev/icons?i=py,js,ts,react,nodejs,express,flask,html,css,bootstrap,mysql,postgres,docker,aws,git,linux,bash)](https://skillicons.dev)
 
 ### Summary of Qualifications
-* [cite_start]**Full-Stack Development**: 1+ years of experience in web engineering and infrastructure monitoring.
-* [cite_start]**Performance Focused**: Achieved a 95+ Lighthouse score for the AirFler landing page[cite: 29, 36].
-* [cite_start]**Operational Efficiency**: Reduced technical incident resolution time by ~35% through custom SOPs[cite: 30, 46].
-* [cite_start]**Crisis Management**: Provided 24/7 incident response for 150+ users as a Residence Assistant[cite: 31, 40].
+* **Full-Stack Development**: 1+ years of experience in web engineering and infrastructure monitoring.
+* **Performance Focused**: Achieved a 95+ Lighthouse score for the AirFler landing page.
+* **Operational Efficiency**: Reduced technical incident resolution time by ~35% through custom SOPs.
+* **Crisis Management**: Provided 24/7 incident response for 150+ users as a Residence Assistant.
 
 ### Certifications
-* [cite_start]**IBM** Cybersecurity Analyst [cite: 17]
-* [cite_start]**Google** Cybersecurity Professional [cite: 17]
-* [cite_start]**Google** Project Management [cite: 17]
+* **IBM** Cybersecurity Analyst
+* **Google** Cybersecurity Professional
+* **Google** Project Management
 
 ### Connect with me!
 <div>
