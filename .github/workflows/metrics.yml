@@ -1,12 +1,10 @@
 name: Metrics
-
 on:
   schedule:
     - cron: "0 0 * * 0"   # weekly
   workflow_dispatch:
   push:
     branches: ["main"]
-
 jobs:
   achievements:
     runs-on: ubuntu-latest
@@ -26,7 +24,7 @@ jobs:
           plugin_achievements_display: compact
           plugin_achievements_limit: 0
 
-  header:
+  github-metrics:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -41,19 +39,18 @@ jobs:
           base: header
           config_timezone: ${{ secrets.USER_TIMEZONE }}
 
-  repositories:
+  lines:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - uses: gh-metrics/metrics@31361ad6bd911ef04d835ac2b8edd1ccadcf1828
         with:
-          filename: repositories.svg
+          filename: lines-of-code.svg
           token: ${{ secrets.METRICS_SECRET }}
           committer_token: ${{ secrets.GITHUB_TOKEN }}
-          user: nausherwannasir
-          base: repositories
-          config_timezone: ${{ secrets.USER_TIMEZONE }}
+          base: "repositories"
+          plugin_lines: yes
 
   acti_comm:
     runs-on: ubuntu-latest
@@ -66,10 +63,11 @@ jobs:
           token: ${{ secrets.METRICS_SECRET }}
           committer_token: ${{ secrets.GITHUB_TOKEN }}
           user: nausherwannasir
+          template: classic
           base: activity, community
           config_timezone: ${{ secrets.USER_TIMEZONE }}
 
-  iso_calendar:
+  iso_calender:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -80,9 +78,11 @@ jobs:
           token: ${{ secrets.METRICS_SECRET }}
           committer_token: ${{ secrets.GITHUB_TOKEN }}
           user: nausherwannasir
+          template: classic
+          base: ""
+          config_timezone: ${{ secrets.USER_TIMEZONE }}
           plugin_isocalendar: yes
           plugin_isocalendar_duration: half-year
-          config_timezone: ${{ secrets.USER_TIMEZONE }}
 
   habits:
     runs-on: ubuntu-latest
@@ -94,13 +94,15 @@ jobs:
           filename: github-habits.svg
           token: ${{ secrets.METRICS_SECRET }}
           committer_token: ${{ secrets.GITHUB_TOKEN }}
+          config_timezone: ${{ secrets.USER_TIMEZONE }}
           user: nausherwannasir
+          base: ""
+          template: classic
           plugin_habits: yes
           plugin_habits_from: 200
           plugin_habits_days: 14
           plugin_habits_charts: yes
           plugin_habits_trim: yes
-          config_timezone: ${{ secrets.USER_TIMEZONE }}
 
   issue_pr_lang:
     runs-on: ubuntu-latest
@@ -113,6 +115,23 @@ jobs:
           token: ${{ secrets.METRICS_SECRET }}
           committer_token: ${{ secrets.GITHUB_TOKEN }}
           user: nausherwannasir
+          template: classic
+          base: ""
+          config_timezone: ${{ secrets.USER_TIMEZONE }}
           plugin_followup: yes
           plugin_languages: yes
+
+  repositories:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: gh-metrics/metrics@31361ad6bd911ef04d835ac2b8edd1ccadcf1828
+        with:
+          filename: repositories.svg
+          token: ${{ secrets.METRICS_SECRET }}
+          committer_token: ${{ secrets.GITHUB_TOKEN }}
+          user: nausherwannasir
+          template: classic
+          base: repositories
           config_timezone: ${{ secrets.USER_TIMEZONE }}
